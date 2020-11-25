@@ -69,7 +69,7 @@ If it is not on the first level of execution it takes all the .o and .a files (i
 If it is on the first level of execution it instead packages all .o and .a files into a single executable named after the current working directory
 */
 	char** files = malloc(MAX * sizeof(char *)); //Here we allocate memory for the pointers in the string arrays we will use to record filenames
-	int fileno = 0; //We also initialize some variables to let us know how many of each type of file we have
+	int fileno = 0; //We also initialize a variable to let us know how many .c files we have
 	char files2[10000];
 	DIR* dir; //We now setup our directory traversal tools
 	struct dirent *ent;
@@ -99,7 +99,7 @@ If it is on the first level of execution it instead packages all .o and .a files
 			{
 				
 				strcpy(filename2,newpath); //We get the path to the directory and generate the name with .a appended for use later
-				strcat(filename2,".a ");
+				strcat(filename2,".a ");	//We then add this to a string which we will use in our ar call later
 				strcat(files2,filename2);
 				traverse_dir(n+1,newpath); //Recursive call to handle the contents of the directory
 			}
@@ -118,7 +118,7 @@ If it is on the first level of execution it instead packages all .o and .a files
 	closedir(dir); //Close the directory to clean up memory
 	
 	char** calls = malloc(fileno * sizeof(char *));
-	for(int i=0;i<fileno;i++) //Here we loop through all files found and compile them. We free the memory as we go to prevent using too much
+	for(int i=0;i<fileno;i++) //Here we loop through all files found and prepare them for compilation. We free the memory as we go to prevent using too much
 	{
 		char args[10000];
 		char destfile[500];
@@ -132,8 +132,8 @@ If it is on the first level of execution it instead packages all .o and .a files
 		free(files[i]);
 	}
 	free(files); //Delete the array at the end.
-	compiler(fileno,calls);
-	for(int j =0;j<fileno;j++)
+	compiler(fileno,calls); //Here we send off a batch of files to our helper function to create threads to compile all our files
+	for(int j =0;j<fileno;j++) //We do this to free up memory
 	{
 		free(calls[j]);
 	}
