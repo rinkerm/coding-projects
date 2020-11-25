@@ -103,8 +103,8 @@ If it is on the first level of execution it instead packages all .o and .a files
 				
 				traverse_dir(n+1,newpath); //Recursive call to handle the contents of the directory
 			}
-			else //Within the confines of the problem we can assume that if a file is not a directory it must be a .c file
-			{
+			else if(!strcmp(strrchr(ent->d_name, '\0') - 2, ".c"))
+			{{
 				strcpy(filename,newpath); //Get the filename to use for later
 				files[fileno] = (char *)malloc(strlen(filename+1));
 				strcpy(files[fileno],filename);
@@ -113,7 +113,7 @@ If it is on the first level of execution it instead packages all .o and .a files
 				filestolink[fileno] = (char *)malloc(strlen(filename2+1));
 				strcpy(filestolink[fileno],filename2);
 				fileno++;
-			}
+			}}
 		}
 	}
 	closedir(dir); //Close the directory to clean up memory
