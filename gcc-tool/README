@@ -1,0 +1,1 @@
+This is a file which can be used to compile large C libraries into a single executable named after the working directory the executable is placed in
